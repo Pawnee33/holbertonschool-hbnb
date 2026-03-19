@@ -29,6 +29,18 @@ class User(BaseModel):
     email = db.Column(db.String(120), nullable=False, unique=True)
     password = db.Column(db.String(128), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
+    places = db.relationship(
+        'Place',
+        back_populates='owner',
+        lazy=True,
+        cascade='all, delete-orphan'
+        )
+    reviews = db.relationship(
+        'Review',
+        back_populates='user',
+        lazy=True,
+        cascade='all, delete-orphan'
+        )
 
     @validates('first_name')
     def validate_first_name(self, key, value):
@@ -69,17 +81,3 @@ class User(BaseModel):
     def verify_password(self, password):
         """Verifies if the provided password matches the hashed password."""
         return bcrypt.check_password_hash(self.password, password)
-
-# Freeze blocks while waiting for task 9
-
-#    def add_place(self, place):
-#        """Add an amenity to the place."""
-#        self.places.append(place)
-
-#    def add_review(self, review):
-#        """Add an amenity to the place."""
-#        self.reviews.append(review)
-
-#    def delete_review(self, review):
-#        """Add an amenity to the place."""
-#        self.reviews.remove(review)

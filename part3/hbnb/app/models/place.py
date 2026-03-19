@@ -11,11 +11,23 @@ ownership, and relationships with reviews and amenities.
 from app.models.base_model import BaseModel
 from app import db
 from sqlalchemy.orm import validates
+from app.models.amenity import Amenity
 
-# Freeze blocks while waiting for task 9
-
-#from app.models.user import User
-#from app.models.amenity import Amenity
+place_amenity = db.Table(
+    'place_amenity',
+    db.Column(
+        'place_id',
+        db.String(36),
+        db.ForeignKey('places.id'),
+        primary_key=True
+    ),
+    db.Column(
+        'amenity_id',
+        db.String(36),
+        db.ForeignKey('amenities.id'),
+        primary_key=True
+    )
+)
 
 
 class Place(BaseModel):
@@ -30,9 +42,39 @@ class Place(BaseModel):
 
     title = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=False)
-    price = db.Column(db.Float, db.CheckConstraint('price > 0'), nullable=False)
-    latitude = db.Column(db.Float, db.CheckConstraint('latitude >= -90 AND latitude <= 90'), nullable=False)
-    longitude = db.Column(db.Float, db.CheckConstraint('longitude >= -180 AND longitude <= 180'), nullable=False)
+    price = db.Column(
+        db.Float,
+        db.CheckConstraint('price > 0'),
+        nullable=False
+        )
+    latitude = db.Column(
+        db.Float,
+        db.CheckConstraint('latitude >= -90 AND latitude <= 90'),
+        nullable=False
+        )
+    longitude = db.Column(
+        db.Float,
+        db.CheckConstraint('longitude >= -180 AND longitude <= 180'),
+        nullable=False
+        )
+    owner_id = db.Column(
+        db.String(36),
+        db.ForeignKey('users.id'),
+        nullable=False
+        )
+    owner = db.relationship('User', back_populates='places')
+    reviews = db.relationship(
+        'Review',
+        back_populates='place',
+        lazy=True,
+        cascade='all, delete-orphan'
+        )
+    amenities = db.relationship(
+        'Amenity',
+        secondary=place_amenity,
+        lazy='subquery',
+        backref=db.backref('places', lazy=True)
+        )
 
     @validates('title')
     def validate_title(self, key, value):
@@ -68,50 +110,38 @@ class Place(BaseModel):
             raise ValueError("Longitude must be between -180 and 180")
         return value
 
-# Freeze blocks while waiting for task 9
- 
-#    @property
-#   def owner(self):
-#        return self.__owner
+    def add_review(self, review):
+        """
+        Add a review to the place.
 
-#    @owner.setter
-#    def owner(self, value):
-#        if not isinstance(value, User):
-#            raise ValueError("Owner must be a User instance")
-#        self.__owner = value
+            review (Review): Review instance to associate with the place.
 
-#    def add_review(self, review):
-#        """
-#        Add a review to the place.
+        Raises:
+            ValueError: If review is not a valid Review instance.
+        """
+        from app.models.review import Review
 
-#        Args:
-#            review (Review): Review instance to associate with the place.
+        if not isinstance(review, Review):
+            raise ValueError("review must be a Review instance")
+        if review not in self.reviews:
+            self.reviews.append(review)
 
-#        Raises:
-#            ValueError: If review is not a valid Review instance.
-#        """
-#        from app.models.review import Review
+    def delete_review(self, review):
+        """Add an amenity to the place."""
+        if review in self.reviews:
+            self.reviews.remove(review)
 
-#        if not isinstance(review, Review):
-#            raise ValueError("review must be a Review instance")
-#        if review not in self.reviews:
-#            self.reviews.append(review)
+    def add_amenity(self, amenity):
+        """
+        Add an amenity to the place.
 
-#    def delete_review(self, review):
-#        """Add an amenity to the place."""
-#        self.reviews.remove(review)
+        Args:
+           amenity (Amenity): Amenity instance to associate with the place.
 
-#    def add_amenity(self, amenity):
-#        """
-#        Add an amenity to the place.
-
-#        Args:
-#           amenity (Amenity): Amenity instance to associate with the place.
-
-#        Raises:
-#            ValueError: If amenity is not a valid Amenity instance.
-#        """
-#        if not isinstance(amenity, Amenity):
-#            raise ValueError("amenity must be an Amenity instance")
-#        if amenity not in self.amenities:
-#            self.amenities.append(amenity)
+        Raises:
+            ValueError: If amenity is not a valid Amenity instance.
+        """
+        if not isinstance(amenity, Amenity):
+            raise ValueError("amenity must be an Amenity instance")
+        if amenity not in self.amenities:
+            self.amenities.append(amenity)

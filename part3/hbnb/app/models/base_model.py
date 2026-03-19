@@ -33,7 +33,7 @@ class BaseModel(db.Model):
         This method should be called whenever the object state
         changes to reflect the latest update time.
         """
-        self.updated_at = datetime.now()
+        self.updated_at = datetime.utcnow()
 
     def update(self, data):
         """
