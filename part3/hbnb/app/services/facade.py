@@ -25,7 +25,12 @@ class HBnBFacade:
     # USER
     def create_user(self, user_data):
         """create_user that create user"""
-        user = User(**user_data)
+        user = User(
+            first_name=user_data['first_name'],
+            last_name=user_data['last_name'],
+            email=user_data['email'],
+            password='temp'
+            )
         user.hash_password(user_data["password"])
         self.user_repo.add(user)
         return user
@@ -70,13 +75,13 @@ class HBnBFacade:
             raise ValueError("Owner not found")
 
         place = Place(
-            title,
-            description,
-            price,
-            latitude,
-            longitude,
-            owner
-        )
+            title=title,
+            description=description,
+            price=price,
+            latitude=latitude,
+            longitude=longitude,
+            owner_id=owner_id
+            )
 
         for amenity_id in amenities_ids:
             amenity = self.amenity_repo.get(amenity_id)
@@ -193,20 +198,17 @@ class HBnBFacade:
         if not user:
             raise KeyError('Invalid input data')
 
-        del review_data['user_id']
-        review_data['user'] = user
-
         place = self.place_repo.get(review_data['place_id'])
         if not place:
             raise KeyError('Invalid input data')
 
-        del review_data['place_id']
-        review_data['place'] = place
-
-        review = Review(**review_data)
+        review = Review(
+            text=review_data['text'],
+            rating=review_data['rating'],
+            user_id=review_data['user_id'],
+            place_id=review_data['place_id']
+        )
         self.review_repo.add(review)
-        user.add_review(review)
-        place.add_review(review)
         return review
 
     def get_review(self, review_id):
