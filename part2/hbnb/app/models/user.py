@@ -53,7 +53,7 @@ class User(BaseModel):
 
     @first_name.setter
     def first_name(self, value):
-        if not isinstance(value, str):
+        if not isinstance(value, str) or not value.strip():
             raise ValueError("First name is required")
         if len(value) > 50:
             raise ValueError("First name must be 50 characters or less")
@@ -65,7 +65,7 @@ class User(BaseModel):
 
     @last_name.setter
     def last_name(self, value):
-        if not isinstance(value, str):
+        if not isinstance(value, str) or not value.strip():
             raise ValueError("Last name is required")
         if len(value) > 50:
             raise ValueError("Last name must be 50 characters or less")
@@ -83,12 +83,9 @@ class User(BaseModel):
 
         if not re.match(pattern, value):
             raise ValueError("Invalid email format")
-        if value in User.emails:
-            raise ValueError("Email already exists")
-        if hasattr(self, "_User__email"):
-            User.emails.discard(self.__email)
+
         self.__email = value
-        User.emails.add(value)
+
     @property
     def is_admin(self):
         return self.__is_admin
