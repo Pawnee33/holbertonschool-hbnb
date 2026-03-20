@@ -19,8 +19,8 @@ class Amenity(BaseModel):
     It raises a ValueError if validation fails.
     """
     __tablename__ = 'amenities'
-
-    name = db.Column(db.String(50), nullable=False)
+    id   = db.Column(db.String(36), primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
 
     @validates('name')
     def validate_name(self, key, value):

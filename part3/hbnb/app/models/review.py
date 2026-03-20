@@ -18,24 +18,12 @@ class Review(BaseModel):
 
     __tablename__ = 'reviews'
 
-    text = db.Column(db.Text, nullable=False)
-    rating = db.Column(
-        db.Integer,
-        db.CheckConstraint('rating >= 1 AND rating <= 5'),
-        nullable=False
-        )
-    place_id = db.Column(
-        db.String(36),
-        db.ForeignKey('places.id'),
-        nullable=False
-        )
-    place = db.relationship('Place', back_populates='reviews')
-    user_id = db.Column(
-        db.String(36),
-        db.ForeignKey('users.id'),
-        nullable=False
-        )
-    user = db.relationship('User', back_populates='reviews')
+    __tablename__ = 'reviews'
+    id       = db.Column(db.String(36), primary_key=True)
+    text     = db.Column(db.Text, nullable=False)
+    rating   = db.Column(db.Integer, nullable=False)
+    user_id  = db.Column(db.String(36), db.ForeignKey('users.id'),  nullable=False)
+    place_id = db.Column(db.String(36), db.ForeignKey('places.id'), nullable=False)
 
     @validates('text')
     def validate_text(self, key, value):
