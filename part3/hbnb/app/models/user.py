@@ -29,6 +29,7 @@ class User(BaseModel):
     password = db.Column(db.String(128), nullable=False)
     places  = db.relationship('Place',  backref='owner',  lazy=True)
     reviews = db.relationship('Review', backref='author', lazy=True)
+    is_admin   = db.Column(db.Boolean, default=False, nullable=False)
 
     @validates('first_name')
     def validate_first_name(self, key, value):
