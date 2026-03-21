@@ -34,7 +34,7 @@ class User(BaseModel):
         backref='owner', lazy=True, cascade='all, delete-orphan')
     reviews = db.relationship(
         'Review',
-        backref='author', lazy=True, cascade='all, delete-orphan')
+        backref='user', lazy=True, cascade='all, delete-orphan')
 
     @validates('first_name')
     def validate_first_name(self, key, value):
