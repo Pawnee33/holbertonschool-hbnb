@@ -8,7 +8,7 @@ represents an application user with validation rules for core fields.
 
 
 from app import bcrypt
-from app.models.base_model import BaseModel
+from app.models.basemodel import BaseModel
 from app import db
 from sqlalchemy.orm import validates
 import re
@@ -31,7 +31,7 @@ class User(BaseModel):
     is_admin = db.Column(db.Boolean, default=False, nullable=False)
     places = db.relationship(
         'Place',
-        backref='owner', lazy=True, cascade='all, delete-orphan')
+        backref='user', lazy=True, cascade='all, delete-orphan')
     reviews = db.relationship(
         'Review',
         backref='user', lazy=True, cascade='all, delete-orphan')
