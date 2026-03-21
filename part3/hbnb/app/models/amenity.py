@@ -12,7 +12,7 @@ class Amenity(BaseModel):
     created_at
     updated_at
 
-    The constructor ensures data integrity 
+    The constructor ensures data integrity
     by validating the name attribute:
     It checks that a name is provided.
     It ensures the name does not exceed 50 characters.

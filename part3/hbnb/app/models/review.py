@@ -19,10 +19,11 @@ class Review(BaseModel):
     __tablename__ = 'reviews'
 
     text = db.Column(db.Text, nullable=False)
-    rating = db.Column(db.Integer,
-    db.CheckConstraint('rating >= 1 AND rating <= 5'),
-    nullable=False
-    )
+    rating = db.Column(
+        db.Integer,
+        db.CheckConstraint('rating >= 1 AND rating <= 5'),
+        nullable=False
+        )
     user_id = db.Column(
         db.String(36),
         db.ForeignKey('users.id'),  nullable=False)

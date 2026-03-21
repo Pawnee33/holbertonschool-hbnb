@@ -28,6 +28,7 @@ place_amenity = db.Table(
         primary_key=True)
     )
 
+
 class Place(BaseModel):
     """
     Place domain model.
@@ -38,7 +39,7 @@ class Place(BaseModel):
     """
     __tablename__ = 'places'
 
-    title   = db.Column(db.String(100), nullable=False)
+    title = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=False)
     price = db.Column(
         db.Float,

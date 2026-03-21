@@ -19,7 +19,7 @@ class TestReviewEndpoints(unittest.TestCase):
         facade.review_repo = InMemoryRepository()
         facade.user_repo = InMemoryRepository()
         facade.place_repo = InMemoryRepository()
-        
+
         self.user = facade.create_user({
             'first_name': 'John',
             'last_name': 'Doe',

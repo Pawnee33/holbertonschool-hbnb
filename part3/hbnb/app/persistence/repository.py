@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from app import db
 
+
 class Repository(ABC):
     @abstractmethod
     def add(self, obj):
@@ -50,7 +51,11 @@ class InMemoryRepository(Repository):
             del self._storage[obj_id]
 
     def get_by_attribute(self, attr_name, attr_value):
-        return next((obj for obj in self._storage.values() if getattr(obj, attr_name) == attr_value), None)
+        return next(
+            (obj for obj in self._storage.values()
+                if getattr(obj, attr_name) == attr_value),
+            None
+        )
 
     def clear(self):
         """Remove all stored objects"""
@@ -85,4 +90,6 @@ class SQLAlchemyRepository(Repository):
             db.session.commit()
 
     def get_by_attribute(self, attr_name, attr_value):
-        return self.model.query.filter(getattr(self.model, attr_name) == attr_value).first()
+        return self.model.query.filter(
+            getattr(self.model, attr_name) == attr_value
+            ).first()

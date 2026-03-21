@@ -5,6 +5,7 @@ import uuid
 from app import create_app
 from app.services import facade
 
+
 class TestPlaceEndpoints(unittest.TestCase):
 
     def setUp(self):
@@ -66,7 +67,6 @@ class TestPlaceEndpoints(unittest.TestCase):
 
         self.assertEqual(response.status_code, 400)
         self.assertIn("error", response.get_json())
-
 
     def test_create_place_latitude_boundary_invalid(self):
         owner_id = self.create_test_user()
@@ -386,6 +386,7 @@ class TestPlaceEndpoints(unittest.TestCase):
         )
 
         self.assertEqual(response.status_code, 400)
+
 
 if __name__ == '__main__':
     unittest.main()

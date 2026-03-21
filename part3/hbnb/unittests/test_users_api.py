@@ -18,7 +18,12 @@ class TestUserEndpoints(unittest.TestCase):
         facade.review_repo.clear()
         facade.amenity_repo.clear()
 
-    def create_user_payload(self, first_name="John", last_name="Doe", email=None):
+    def create_user_payload(
+        self,
+        first_name="John",
+        last_name="Doe",
+        email=None
+    ):
         if email is None:
             email = f"john{uuid.uuid4()}@example.com"
         return {

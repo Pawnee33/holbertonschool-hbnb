@@ -159,6 +159,7 @@ class PlaceResource(Resource):
             'owner_id': update_place.user_id
         }, 200
 
+
 @api.route('/<place_id>/amenities')
 class PlaceAmenities(Resource):
     @api.expect(amenity_model)
@@ -169,19 +170,20 @@ class PlaceAmenities(Resource):
         amenities_data = api.payload
         if not amenities_data or len(amenities_data) == 0:
             return {'error': 'Invalid input data'}, 400
-        
+
         place = facade.get_place(place_id)
         if not place:
             return {'error': 'Place not found'}, 404
-        
+
         for amenity in amenities_data:
             a = facade.get_amenity(amenity['id'])
             if not a:
                 return {'error': 'Invalid input data'}, 400
-        
+
         for amenity in amenities_data:
             place.add_amenity(a)
         return {'message': 'Amenities added successfully'}, 200
+
 
 @api.route('/<place_id>/reviews/')
 class PlaceReviewList(Resource):

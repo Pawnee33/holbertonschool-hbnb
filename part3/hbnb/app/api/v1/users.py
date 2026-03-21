@@ -15,12 +15,25 @@ api = Namespace('users', description='User operations')
 
 # Define the user model for input validation and documentation
 user_model = api.model('User', {
-    'first_name': fields.String(required=True, description='First name of the user'),
-    'last_name': fields.String(required=True, description='Last name of the user'),
-    'email': fields.String(required=True, description='Email of the user'),
-    'password': fields.String(required=True, description='User password'),
+    'first_name': fields.String(
+        required=True,
+        description='First name of the user'
+        ),
+    'last_name': fields.String(
+        required=True,
+        description='Last name of the user'
+        ),
+    'email': fields.String(
+        required=True,
+        description='Email of the user'
+        ),
+    'password': fields.String(
+        required=True,
+        description='User password'
+        ),
 
 })
+
 
 @api.route('/')
 class UserList(Resource):
@@ -45,7 +58,8 @@ class UserList(Resource):
         the service facade.
 
         Returns:
-            tuple: JSON representation of the created user and HTTP status code.
+            tuple: JSON representation
+            of the created user and HTTP status code.
         """
         claims = get_jwt()
 
@@ -108,7 +122,8 @@ class UserResource(Resource):
             user_id (str): Unique identifier of the user.
 
         Returns:
-            tuple: User data if found, otherwise an error message and status code.
+            tuple: User data if found,
+            otherwise an error message and status code.
         """
         user = facade.get_user(user_id)
         if not user:

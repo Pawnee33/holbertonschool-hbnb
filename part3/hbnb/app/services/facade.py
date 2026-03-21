@@ -133,7 +133,7 @@ class HBnBFacade:
             raise ValueError("Invalid amenity data")
         if "name" not in amenity_data or not amenity_data["name"]:
             raise ValueError("Amenity name is required")
-            
+
         amenity = Amenity(**amenity_data)
         self.amenity_repo.add(amenity)
         return amenity
@@ -261,7 +261,7 @@ class HBnBFacade:
 
         This method updates only the authorized fields
         of a review, then saves the changes to the database.
-    
+
 
         Args:
         review_id (int): Unique identifier of the review.
@@ -272,7 +272,7 @@ class HBnBFacade:
 
         Raises:
         ValueError: If the review does not exist.
-        """    
+        """
         review = self.get_review(review_id)
         if not review:
             return None

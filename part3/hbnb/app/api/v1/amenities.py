@@ -10,6 +10,7 @@ amenity_model = api.model('Amenity', {
     'name': fields.String(required=True, description='Name of the amenity')
 })
 
+
 @api.route('/')
 class AmenityList(Resource):
     @api.expect(amenity_model)
@@ -32,7 +33,11 @@ class AmenityList(Resource):
     @api.response(200, 'List of amenities retrieved successfully')
     def get(self):
         amenities = facade.get_all_amenities()
-        return [{'id': amenity.id, 'name': amenity.name} for amenity in amenities], 200
+        return [
+            {'id': amenity.id, 'name': amenity.name}
+            for amenity in amenities
+            ], 200
+
 
 @api.route('/<amenity_id>')
 class AmenityResource(Resource):
