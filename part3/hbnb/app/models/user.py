@@ -24,12 +24,15 @@ class User(BaseModel):
     """
     __tablename__ = 'users'
 
-    id       = db.Column(db.String(36), primary_key=True)
-    email    = db.Column(db.String(120), nullable=False, unique=True)
+    email = db.Column(db.String(120), nullable=False, unique=True)
     password = db.Column(db.String(128), nullable=False)
-    places  = db.relationship('Place',  backref='owner',  lazy=True)
-    reviews = db.relationship('Review', backref='author', lazy=True)
-    is_admin   = db.Column(db.Boolean, default=False, nullable=False)
+    is_admin = db.Column(db.Boolean, default=False, nullable=False)
+    places = db.relationship(
+        'Place',
+        backref='owner', lazy=True, cascade='all, delete-orphan')
+    reviews = db.relationship(
+        'Review',
+        backref='author', lazy=True, cascade='all, delete-orphan')
 
     @validates('first_name')
     def validate_first_name(self, key, value):
@@ -46,7 +49,7 @@ class User(BaseModel):
         if len(value) > 50:
             raise ValueError("Last name must be 50 characters or less")
         return value
-    
+
     @validates('email')
     def validate_email(self, key, value):
         if not isinstance(value, str):
