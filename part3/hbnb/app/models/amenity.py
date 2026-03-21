@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from app.models.base_model import BaseModel
+from app.models.basemodel import BaseModel
 from app import db
 from sqlalchemy.orm import validates
 
@@ -19,8 +19,8 @@ class Amenity(BaseModel):
     It raises a ValueError if validation fails.
     """
     __tablename__ = 'amenities'
-    id   = db.Column(db.String(36), primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
+
+    name = db.Column(db.String(50), nullable=False)
 
     @validates('name')
     def validate_name(self, key, value):
