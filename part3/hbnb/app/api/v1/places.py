@@ -78,7 +78,7 @@ class PlaceList(Resource):
             'price': new_place.price,
             'latitude': new_place.latitude,
             'longitude': new_place.longitude,
-            'owner_id': new_place.owner.id
+            'owner_id': new_place.user_id
         }, 201
 
     @api.response(200, 'List of places retrieved successfully')
@@ -114,10 +114,10 @@ class PlaceResource(Resource):
             'latitude': place.latitude,
             'longitude': place.longitude,
             'owner': {
-                'id': place.owner.id,
-                'first_name': place.owner.first_name,
-                'last_name': place.owner.last_name,
-                'email': place.owner.email
+                'id': place.user.id,
+                'first_name': place.user.first_name,
+                'last_name': place.user.last_name,
+                'email': place.user.email
             },
             'amenities': [
                 {
@@ -143,7 +143,7 @@ class PlaceResource(Resource):
         if not place:
             return {'error': 'Place not found'}, 404
 
-        if place.owner.id != current_user:
+        if place.user.id != current_user:
             return {"error": "Unauthorized action"}, 403
         try:
             update_place = facade.update_place(place_id, place_data)
@@ -156,7 +156,7 @@ class PlaceResource(Resource):
             'price': update_place.price,
             'latitude': update_place.latitude,
             'longitude': update_place.longitude,
-            'owner_id': update_place.owner.id
+            'owner_id': update_place.user_id
         }, 200
 
 @api.route('/<place_id>/amenities')
