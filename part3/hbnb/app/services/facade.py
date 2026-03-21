@@ -80,7 +80,7 @@ class HBnBFacade:
             price=price,
             latitude=latitude,
             longitude=longitude,
-            owner_id=owner_id
+            user_id=owner_id
             )
 
         for amenity_id in amenities_ids:
@@ -293,11 +293,4 @@ class HBnBFacade:
         Raises:
         ValueError: If the review does not exist.
         """
-        review = self.review_repo.get(review_id)
-        
-        user = self.user_repo.get(review.user.id)
-        place = self.place_repo.get(review.place.id)
-
-        user.delete_review(review)
-        place.delete_review(review)
         self.review_repo.delete(review_id)
