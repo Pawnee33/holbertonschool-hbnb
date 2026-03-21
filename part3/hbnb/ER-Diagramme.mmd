@@ -1,6 +1,11 @@
+# HBnB — Database Schema Documentation
+ 
+## Entity-Relationship Diagram
+
 ---
 title: ER Diagramme
 ---
+```mermaid
 erDiagram
 	direction TB
 	USER {
@@ -58,3 +63,121 @@ erDiagram
 	style PLACE stroke:#2962FF
 	style AMENITY stroke:#AA00FF
 	style REVIEW stroke:#FF6D00
+	```
+---
+ 
+## Entity and Attribute Descriptions
+ 
+### USER
+Represents an application user, either a regular user or an administrator.
+ 
+| Attribute | Type | Description |
+|---|---|---|
+| `id` | `CHAR(36)` | Unique UUID identifier (primary key) |
+| `first_name` | `VARCHAR(255)` | User's first name |
+| `last_name` | `VARCHAR(255)` | User's last name |
+| `email` | `VARCHAR(255)` | Email address (unique) |
+| `password` | `VARCHAR(255)` | Password hashed with bcrypt |
+| `is_admin` | `BOOLEAN` | Whether the user has admin privileges (default: `false`) |
+| `created_at` | `DATETIME` | Record creation timestamp |
+| `updated_at` | `DATETIME` | Last modification timestamp |
+ 
+---
+ 
+### PLACE
+Represents a property listed by a user.
+ 
+| Attribute | Type | Description |
+|---|---|---|
+| `id` | `CHAR(36)` | Unique UUID identifier (primary key) |
+| `title` | `VARCHAR(255)` | Title of the place |
+| `description` | `TEXT` | Detailed description |
+| `price` | `DECIMAL(10,2)` | Price per night |
+| `latitude` | `FLOAT` | Geographic latitude (between -90 and 90) |
+| `longitude` | `FLOAT` | Geographic longitude (between -180 and 180) |
+| `owner_id` | `CHAR(36)` | Reference to the owner (`USER.id`) |
+| `created_at` | `DATETIME` | Record creation timestamp |
+| `updated_at` | `DATETIME` | Last modification timestamp |
+ 
+---
+ 
+### REVIEW
+Represents a review left by a user on a place.
+ 
+| Attribute | Type | Description |
+|---|---|---|
+| `id` | `CHAR(36)` | Unique UUID identifier (primary key) |
+| `text` | `TEXT` | Review content |
+| `rating` | `INT` | Rating given (between 1 and 5) |
+| `user_id` | `CHAR(36)` | Reference to the author (`USER.id`) |
+| `place_id` | `CHAR(36)` | Reference to the place (`PLACE.id`) |
+| `created_at` | `DATETIME` | Record creation timestamp |
+| `updated_at` | `DATETIME` | Last modification timestamp |
+ 
+---
+ 
+### AMENITY
+Represents a feature or service available at a place (e.g. WiFi, swimming pool).
+ 
+| Attribute | Type | Description |
+|---|---|---|
+| `id` | `CHAR(36)` | Unique UUID identifier (primary key) |
+| `name` | `VARCHAR(255)` | Name of the amenity (unique) |
+| `created_at` | `DATETIME` | Record creation timestamp |
+| `updated_at` | `DATETIME` | Last modification timestamp |
+ 
+---
+ 
+### PLACE_AMENITY
+Junction table managing the many-to-many relationship between `PLACE` and `AMENITY`.
+ 
+| Attribute | Type | Description |
+|---|---|---|
+| `place_id` | `CHAR(36)` | Reference to the place (`PLACE.id`) |
+| `amenity_id` | `CHAR(36)` | Reference to the amenity (`AMENITY.id`) |
+ 
+> The primary key is composite: (`place_id`, `amenity_id`).
+ 
+---
+ 
+## Relationships
+ 
+### USER → PLACE (one-to-many)
+A user can own multiple places, but each place belongs to exactly one user. The foreign key `owner_id` in `PLACE` references `USER.id`.
+ 
+### USER → REVIEW (one-to-many)
+A user can write multiple reviews, but each review is written by exactly one user. The foreign key `user_id` in `REVIEW` references `USER.id`.
+ 
+### PLACE → REVIEW (one-to-many)
+A place can receive multiple reviews, but each review is associated with exactly one place. The foreign key `place_id` in `REVIEW` references `PLACE.id`.
+ 
+### PLACE ↔ AMENITY (many-to-many)
+A place can offer multiple amenities, and an amenity can be associated with multiple places. This relationship is managed by the `PLACE_AMENITY` junction table.
+ 
+---
+ 
+## Constraints and Business Rules
+ 
+### Database Constraints
+ 
+| Table | Constraint | Description |
+|---|---|---|
+| `USER` | `UNIQUE(email)` | No two users can share the same email address |
+| `AMENITY` | `UNIQUE(name)` | No two amenities can share the same name |
+| `REVIEW` | `UNIQUE(user_id, place_id)` | A user can only leave one review per place |
+| `REVIEW` | `CHECK(rating >= 1 AND rating <= 5)` | Rating must be between 1 and 5 |
+| `PLACE` | `CHECK(price > 0)` | Price must be strictly positive |
+| `PLACE` | `CHECK(latitude BETWEEN -90 AND 90)` | Valid geographic latitude |
+| `PLACE` | `CHECK(longitude BETWEEN -180 AND 180)` | Valid geographic longitude |
+| `PLACE_AMENITY` | `PRIMARY KEY(place_id, amenity_id)` | Composite primary key to prevent duplicates |
+ 
+### Application-Level Business Rules
+ 
+- A user **cannot review their own place**.
+- A user **cannot leave more than one review** on the same place.
+- Only the **owner of a place** can update or delete it (unless the user is an admin).
+- Only the **author of a review** can update or delete it (unless the user is an admin).
+- An **admin** can create and modify any user, place, review, or amenity without ownership restrictions.
+- The **password** is never returned in API responses.
+- All `id` fields are **UUID v4** values generated automatically at creation.
+- The `created_at` and `updated_at` fields are managed automatically by the `BaseModel`.
