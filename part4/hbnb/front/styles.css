@@ -35,6 +35,7 @@ header {
     color: #feffff;
 }
 
+
 .place-card h2 {
     margin-top: 20px;
     margin-bottom: 20px;
@@ -57,6 +58,99 @@ header {
     flex-wrap: wrap;
 }
 
+.place-details {
+    text-align: center;
+    justify-content: center;
+    flex: 1;
+    margin: 0px;
+    padding: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #05284c;
+    color: #feffff;
+}
+
+#place-details h2 {
+    margin-top: 1%;
+    margin-bottom: 5%;
+    text-align: center;
+}
+
+.place-details p:first-child {
+    margin-top: 40px;
+}
+
+.place-details p + p {
+    margin-top: 20px;
+}
+
+.place-details p:last-child {
+    margin-bottom: 40px;
+}
+
+#places-details {
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.review-card {
+    text-align: left;
+    justify-content: center;
+    flex: 1;
+    margin: 20px;
+    padding: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #05284c;
+    color: #feffff;
+}
+
+#reviews h2 {
+margin: 20px;
+}
+.review-card p {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#add-review h2 {
+    margin: 20px;
+}
+
+#review-text {
+    margin: 10px;
+}
+
+.form label {
+    display: block;
+}
+
+.form textarea {
+    width: 100%;
+    height: 100px;
+}
+
+#review-form p {
+    margin: 10px;
+}
+
+#rating {
+    color: #FFA500 ;
+}
+
+.form button {
+    width: 100%;
+    height: 40px;
+    margin: 10px;
+    background-color: #05284c;
+    color: #feffff;
+}
+
 nav a {
     color: #fff;
     text-decoration: none;
@@ -65,4 +159,11 @@ nav a {
 
 main {
     padding: 2rem;
+}
+
+footer {
+    text-align: center;
+    background-color: #05284c;
+    color: #fff;
+    padding: 1rem;
 }
