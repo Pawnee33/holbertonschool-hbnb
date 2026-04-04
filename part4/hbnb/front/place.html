@@ -7,7 +7,8 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-        <!-- Header -->
+
+    <!-- Header -->
     <header>
         <div>
             <nav>
@@ -50,8 +51,7 @@
             <form id="review-form" class="form">
                 <label for="review-text"><strong>Your Review:</strong></label>
                 <textarea id="review-text" name="review-text" required></textarea>
-                <div>
-                    <p><strong>Rating:</strong></p>
+                <label for="rating">Rating:</label>                
                 <select name="rating" id="rating">
                     <option value="1">★</option>
                     <option value="2">★★</option>
@@ -59,11 +59,12 @@
                     <option value="4">★★★★</option>
                     <option value="5">★★★★★</option>
                 </select>
-                </div>
                 <button type="submit">Submit Review</button>
             </form>
         </section>
     </main>
+
+    <!-- footer -->
     <footer>
         <p>&copy; 2026 HBNB. All rights reserved</p>
     </footer>
