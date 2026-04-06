@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
             loginUser(email, password);
         });
     }
+    checkAuthentication();
 });
 
 async function loginUser(email, password) {
@@ -34,6 +35,47 @@ async function loginUser(email, password) {
       console.log("Success:", data);
     } else {
       alert('Login failed: ' + response.statusText);
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
+
+function checkAuthentication() {
+    const token = getCookie('token');
+    const loginLink = document.getElementById('login-link');
+
+    if (!token) {
+        loginLink.style.display = 'block';
+    } else {
+        loginLink.style.display = 'none';
+        // Fetch places data if the user is authenticated
+        fetchPlaces(token);
+    }
+}
+function getCookie(name) {
+    const cookies = document.cookie.split('; ');
+    const cookie = cookies.find(cookie => cookie.startsWith(name + '='));
+    return cookie ? cookie.split('=')[1] : null;
+}
+
+async function fetchPlaces(token) {
+    // Make a GET request to fetch places data
+    try {
+      const request = await fetch('http://127.0.0.1:5000/api/v1/places', {
+        method: 'GET',
+        // Include the token in the Authorization header
+        headers: {
+            'Authorization': `Bearer ${token}`
+        },
+      });
+      // Handle the response and pass the data to displayPlaces function
+      if (request.ok) {
+      let data = await request.json();
+      console.log("Success:", data);
+      displayPlaces(data);
+    } else {
+      alert('Login failed: ' + request.statusText);
     }
   } catch (error) {
     console.error("Error:", error);
