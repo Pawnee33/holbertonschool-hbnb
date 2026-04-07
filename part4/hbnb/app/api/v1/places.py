@@ -126,6 +126,15 @@ class PlaceResource(Resource):
                     'name': amenity.name
                 }
                 for amenity in place.amenities
+            ],
+            'reviews': [
+                {
+                    'id': review.id,
+                    'text': review.text,
+                    'rating': review.rating,
+                    'user_id': review.user_id
+                }
+                for review in place.reviews
             ]
         }, 200
 
@@ -182,7 +191,10 @@ class PlaceAmenities(Resource):
                 return {'error': 'Invalid input data'}, 400
 
         for amenity in amenities_data:
+            a = facade.get_amenity(amenity['id'])
             place.add_amenity(a)
+        from app import db
+        db.session.commit()
         return {'message': 'Amenities added successfully'}, 200
 
 
