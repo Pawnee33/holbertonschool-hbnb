@@ -32,6 +32,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+const placeImages = {
+    'Beautiful Beach House': 'images/Beautiful-Beach_House.jpg',
+    'Rouna': 'images/Rouna.jpg',
+    'Golden Apple': 'images/Golden_Apple.jpg'
+};
+
 async function loginUser(email, password) {
   try {
     const response = await fetch('http://127.0.0.1:5000/api/v1/auth/login', {
@@ -128,6 +134,7 @@ function displayPlaces(places) {
       card.classList.add('place-card');
       card.dataset.price = place.price;
       card.innerHTML = `
+      <img src="${placeImages[place.title] || ''}" alt="${place.title}" style="width:100%; border-radius:10px;">
       <h2>${place.title}</h2>
       <p>Price per night: $${place.price}</p>
       <button class="details-button" onclick="window.location.href='place.html?id=${place.id}'">View Details</button>
@@ -192,6 +199,13 @@ function displayPlaceDetails(place) {
     const title = document.createElement('h2');
     title.textContent = place.title;
     placeDetails.appendChild(title);
+
+    const img = document.createElement('img');
+    img.src = placeImages[place.title] || '';
+    img.alt = place.title;
+    img.style.width = '100%';
+    img.style.borderRadius = '10px';
+    placeDetails.appendChild(img);
     
     const amenityIcons = {
     'WiFi': 'images/icon_wifi.png',
