@@ -15,7 +15,21 @@ document.addEventListener('DOMContentLoaded', () => {
             loginUser(email, password);
         });
     }
-    checkAuthentication();
+    const reviewForm = document.getElementById('review-form');
+    const token = checkAuthentication();
+    const placeId = getPlaceIdFromURL();
+ 
+    if (reviewForm) { 
+        reviewForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            // Get review text from form
+            const reviewText = document.getElementById('review').value;
+            const rating = document.getElementById('rating').value;
+            // Make AJAX request to submit review
+            // Handle the response
+            await submitReview(token, placeId, reviewText, rating);
+        });
+    }
 });
 
 async function loginUser(email, password) {
@@ -64,7 +78,9 @@ function checkAuthentication() {
 
         const placeId = getPlaceIdFromURL();
         if (placeId) fetchPlaceDetails(token, placeId);
-    }
+
+      }
+      return token;
 }
 
 function logout() {
@@ -176,14 +192,21 @@ function displayPlaceDetails(place) {
     const title = document.createElement('h2');
     title.textContent = place.title;
     placeDetails.appendChild(title);
-
+    
+    const amenityIcons = {
+    'WiFi': 'images/icon_wifi.png',
+    'Pool': 'images/icon_pool.png',
+    'Air Conditioning': 'images/icon_air-conditioner.png',
+    'Bathtub': 'images/icon_bath.png',
+    'King Size Bed': 'images/icon_bed.png'
+  };
     const div = document.createElement('div');
     div.classList.add('place-details');
     div.innerHTML = `
         <p class="place-info"><strong>Host:</strong> ${place.owner.first_name} ${place.owner.last_name}</p>
         <p class="place-info"><strong>Price per night:</strong> $${place.price}</p>
         <p class="place-info"><strong>Description:</strong> ${place.description}</p>
-        <p class="place-info"><strong>Amenities:</strong> ${place.amenities.map(a => a.name).join(', ')}</p>
+        <p class="place-info"><strong>Amenities:</strong> ${place.amenities.map(a => `<img src="${amenityIcons[a.name] || ''}" width="20"> ${a.name}`).join(', ')}</p>
     `;
     placeDetails.appendChild(div);
     
@@ -193,11 +216,62 @@ function displayPlaceDetails(place) {
         const card = document.createElement('div');
         card.classList.add('review-card');
         card.innerHTML = `
-            <p><strong>${review.user_id}</strong></p>
+            <p><strong>${review.user_name}:</strong></p>
             <p>${review.text}</p>
-            <p>Rating: ${review.rating}</p>
+            <p>Rating: ${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}</p>
         `;
         // Append the created elements to the place details section
         reviewsSection.appendChild(card);
 });
+}
+
+async function submitReview(token, placeId, reviewText, rating) {
+    try {
+        // Make a POST request to submit review data
+        const response = await fetch('http://127.0.0.1:5000/api/v1/reviews/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                // Include the token in the Authorization header
+                'Authorization': `Bearer ${token}`
+            },
+            // Send placeId and reviewText in the request body
+            body: JSON.stringify({
+                text: reviewText,
+                rating: parseInt(rating, 10),
+                place_id: placeId
+            })
+        });
+        // Handle the response
+        handleResponse(response, placeId);
+    } catch (error) {
+        console.error('Error submitting review:', error);
+        alert('Network error. Please try again.');
+    }
+}
+
+function handleResponse(response, placeId) {
+    if (response.ok) {
+        alert('Review submitted successfully!');
+        // Clear the form
+        document.getElementById('review-form').reset();
+        // Redirect back to the place page
+        window.location.href = `place.html?id=${placeId}`;
+    } else {
+        alert('Failed to submit review');
+    }
+}
+
+const stars = document.querySelectorAll('.star');
+if (stars.length > 0) {
+    stars.forEach(star => {
+        star.addEventListener('click', () => {
+            const value = star.dataset.value;
+            document.getElementById('rating').value = value;
+            stars.forEach(s => {
+                s.textContent = s.dataset.value <= value ? '★' : '☆';
+                s.classList.toggle('selected', s.dataset.value <= value);
+            });
+        });
+    });
 }
