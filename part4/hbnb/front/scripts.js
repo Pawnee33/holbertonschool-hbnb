@@ -48,9 +48,12 @@ function checkAuthentication() {
     const logoutButton = document.getElementById('logout-button');
 
     if (!token) {
-        if (loginLink) loginLink.style.display = 'block';
-        if (logoutButton) logoutButton.style.display = 'none';
-        if (addReviewSection) addReviewSection.style.display = 'none';
+      if (document.getElementById('review-form')) {
+        window.location.href = 'index.html';
+      }
+      if (loginLink) loginLink.style.display = 'block';
+      if (logoutButton) logoutButton.style.display = 'none';
+      if (addReviewSection) addReviewSection.style.display = 'none';
     } else {
         if (loginLink) loginLink.style.display = 'none';
         if (logoutButton) logoutButton.style.display = 'block';
