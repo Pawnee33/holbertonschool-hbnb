@@ -33,9 +33,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 const placeImages = {
-    'Beautiful Beach House': 'images/Beautiful-Beach_House.jpg',
-    'Rouna': 'images/Rouna.jpg',
-    'Golden Apple': 'images/Golden_Apple.jpg'
+    'Beautiful Beach House': ['images/Beautiful-Beach_House.jpg', 'images/Beautiful-Beach_House2.jpg', 'images/Beautiful-Beach_House3.jpg'],
+    'Rouna': ['images/Rouna.jpg', 'images/Rouna2.jpg', 'images/Rouna3.jpg'],
+    'Golden Apple': ['images/Golden_Apple.jpg', 'images/Golden_Apple2.jpg', 'images/Golden_Apple3.jpg']
 };
 
 async function loginUser(email, password) {
@@ -134,7 +134,7 @@ function displayPlaces(places) {
       card.classList.add('place-card');
       card.dataset.price = place.price;
       card.innerHTML = `
-      <img src="${placeImages[place.title] || ''}" alt="${place.title}" style="width:100%; border-radius:10px;">
+      <img src="${placeImages[place.title] ? placeImages[place.title][0] : ''}" alt="${place.title}" style="width:100%; border-radius:10px;">
       <h2>${place.title}</h2>
       <p>Price per night: $${place.price}</p>
       <button class="details-button" onclick="window.location.href='place.html?id=${place.id}'">View Details</button>
@@ -200,12 +200,61 @@ function displayPlaceDetails(place) {
     title.textContent = place.title;
     placeDetails.appendChild(title);
 
+    const images = placeImages[place.title] || [];
+    let currentIndex = 0;
+
+    const sliderDiv = document.createElement('div');
+    sliderDiv.style.position = 'relative';
+    sliderDiv.style.textAlign = 'center';
+    sliderDiv.style.maxWidth = '900px';
+    sliderDiv.style.margin = '0 auto';
+
     const img = document.createElement('img');
-    img.src = placeImages[place.title] || '';
+    img.src = images[0] || '';
     img.alt = place.title;
     img.style.width = '100%';
     img.style.borderRadius = '10px';
-    placeDetails.appendChild(img);
+    img.style.maxHeight = '900px';
+    img.style.objectFit = 'cover';
+
+    const prevBtn = document.createElement('button');
+    prevBtn.textContent = '◀';
+    prevBtn.style.position = 'absolute';
+    prevBtn.style.left = '10px';
+    prevBtn.style.top = '50%';
+    prevBtn.style.transform = 'translateY(-50%)';
+    prevBtn.style.background = 'rgba(0,0,0,0.5)';
+    prevBtn.style.color = '#fff';
+    prevBtn.style.border = 'none';
+    prevBtn.style.borderRadius = '50%';
+    prevBtn.style.cursor = 'pointer';
+    prevBtn.style.padding = '10px';
+    prevBtn.onclick = () => {
+        currentIndex = (currentIndex - 1 + images.length) % images.length;
+        img.src = images[currentIndex];
+    };
+
+    const nextBtn = document.createElement('button');
+    nextBtn.textContent = '▶';
+    nextBtn.style.position = 'absolute';
+    nextBtn.style.right = '10px';
+    nextBtn.style.top = '50%';
+    nextBtn.style.transform = 'translateY(-50%)';
+    nextBtn.style.background = 'rgba(0,0,0,0.5)';
+    nextBtn.style.color = '#fff';
+    nextBtn.style.border = 'none';
+    nextBtn.style.borderRadius = '50%';
+    nextBtn.style.cursor = 'pointer';
+    nextBtn.style.padding = '10px';
+    nextBtn.onclick = () => {
+        currentIndex = (currentIndex + 1) % images.length;
+        img.src = images[currentIndex];
+    };
+
+    sliderDiv.appendChild(prevBtn);
+    sliderDiv.appendChild(img);
+    sliderDiv.appendChild(nextBtn);
+    placeDetails.appendChild(sliderDiv);
     
     const amenityIcons = {
     'WiFi': 'images/icon_wifi.png',
