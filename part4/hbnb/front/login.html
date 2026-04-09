@@ -23,16 +23,18 @@
             <button id="logout-button" onclick="logout()">Logout</button>
         </nav>
     </header>
-    <main>
-        <form id="login-form">
+    <main class="login-main">
+        <form id="login-form" class="login-card">
             <h2>Login</h2>
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
-            
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
-            
-            <button type="submit">Login</button>
+            <div class="input-group">
+                <span>✉</span>
+                <input type="email" id="email" name="email" placeholder="Email" required>
+            </div>
+            <div class="input-group">
+                <span>🔒</span>
+                <input type="password" id="password" name="password" placeholder="Password" required>
+            </div>
+            <button type="submit" class="login-btn">LOGIN</button>
         </form>
     </main>
 

@@ -7,7 +7,7 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-family: Helvetica, sans-serif;
 }
 
 body {
@@ -15,7 +15,8 @@ body {
     flex-direction: column;
     min-height: 100vh;
     background-color: #f4f4f4;
-    color: #333;
+    color: #fffdfd;
+    background: linear-gradient(135deg, #05284c, #1a6b8a, #05284c);
 }
 
 header {
@@ -31,6 +32,8 @@ header nav {
     margin-right: 1rem;
 }
 
+
+
 .place-card {
     text-align: center;
     justify-content: center;
@@ -44,8 +47,13 @@ header nav {
     border-radius: 10px;
     background-color: #05284c;
     color: #feffff;
+    transition: 0.2s ease;
+    box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.5);
 }
 
+.place-card:hover {
+    transform: translateY(-8px);
+}
 
 .place-card h2 {
     margin-top: 20px;
@@ -69,6 +77,93 @@ header nav {
     color: #fff;
     cursor: pointer;
     font-size: 1rem;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #790e0b;
+}
+
+.login-main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #05284c, #1a6b8a, #05284c);
+    padding: 0;
+        margin: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #790e0b;
+}
+
+.login-button {
+    margin: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #790e0b;
+}
+
+.login-card {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 40px;
+    width: 350px;
+    text-align: center;
+    color: #05284c;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.logo-login {
+    width: 80px;
+    margin-bottom: 20px;
+}
+
+.login-card h2 {
+    font-size: 2rem;
+    letter-spacing: 3px;
+    margin-bottom: 30px;
+    color: #fff;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 25px;
+    padding: 10px 20px;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.input-group span {
+    margin-right: 10px;
+}
+
+.input-group input {
+    border: none;
+    background: transparent;
+    outline: none;
+    width: 100%;
+    font-size: 1rem;
+}
+
+.login-btn {
+    background: rgba(255, 255, 255, 0.3);
+    color: #fff;
+    border: 2px solid #fff;
+    border-radius: 25px;
+    padding: 10px 40px;
+    font-size: 1rem;
+    letter-spacing: 2px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: 0.3s;
+}
+
+.login-btn:hover {
+    background: #fff;
+    color: #05284c;
 }
 
 #places-list {
@@ -109,6 +204,10 @@ header nav {
 
 .place-details p:last-child {
     margin-bottom: 40px;
+}
+
+.details-button {
+    color: #ffffff;
 }
 
 #places-details {
@@ -192,6 +291,10 @@ margin-top: 20px;
     margin: 10px auto;
     background-color: #05284c;
     color: #feffff;
+}
+.details-button,
+.form button:hover {
+    cursor: pointer;
 }
 
 nav a {

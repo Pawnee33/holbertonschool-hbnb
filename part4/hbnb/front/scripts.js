@@ -35,7 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
 const placeImages = {
     'Beautiful Beach House': ['images/Beautiful-Beach_House.jpg', 'images/Beautiful-Beach_House2.jpg', 'images/Beautiful-Beach_House3.jpg'],
     'Rouna': ['images/Rouna.jpg', 'images/Rouna2.jpg', 'images/Rouna3.jpg'],
-    'Golden Apple': ['images/Golden_Apple.jpg', 'images/Golden_Apple2.jpg', 'images/Golden_Apple3.jpg']
+    'Golden Apple': ['images/Golden_Apple.jpg', 'images/Golden_Apple2.jpg', 'images/Golden_Apple3.jpg'],
+    'Corsica': ['images/Corsica.jpg', 'images/Corsica2.jpg', 'images/Corsica3.jpg']
 };
 
 async function loginUser(email, password) {
