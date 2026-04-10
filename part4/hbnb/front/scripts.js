@@ -3,6 +3,13 @@
   Please, follow the project instructions to complete the tasks.
 */
 
+/* ============================================================
+   DOM INITIALIZATION
+   - Listens for DOMContentLoaded to ensure HTML is fully loaded
+     before executing any code.
+   - Attaches event listeners to the login form and the review form.
+   - Calls checkAuthentication() and retrieves the place ID from URL.
+   ============================================================ */
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('login-form');
 
@@ -27,11 +34,55 @@ document.addEventListener('DOMContentLoaded', () => {
             const rating = document.getElementById('rating').value;
             // Make AJAX request to submit review
             // Handle the response
+            if (!token) {
+                alert("You must be logged in");
+                return;
+            }
+
+            if (!placeId) {
+                alert("Invalid place");
+                return;
+            }
+
+            if (!reviewText) {
+                alert("Review cannot be empty");
+                return;
+            }
+
+            if (!rating) {
+                alert("Please select a rating");
+                return;
+            }
+
             await submitReview(token, placeId, reviewText, rating);
+        });
+    }
+    /* ============================================================
+    INTERACTIVE STAR RATING
+    - Selects all clickable star elements (.star).
+    - On click: updates the hidden #rating input with the selected
+      value and toggles filled/empty stars (★/☆) up to that value.
+    ============================================================ */
+    const stars = document.querySelectorAll('.star');
+    if (stars.length > 0) {
+        stars.forEach(star => {
+            star.addEventListener('click', () => {
+                const value = star.dataset.value;
+                document.getElementById('rating').value = value;
+                stars.forEach(s => {
+                    s.textContent = s.dataset.value <= value ? '★' : '☆';
+                    s.classList.toggle('selected', s.dataset.value <= value);
+                });
+            });
         });
     }
 });
 
+/* ============================================================
+   PLACE IMAGE MAPPING
+   - Maps each place name to an array of 3 images used
+     in the image slider on the place details page.
+   ============================================================ */
 const placeImages = {
     'Beautiful Beach House': ['images/Beautiful-Beach_House.jpg', 'images/Beautiful-Beach_House2.jpg', 'images/Beautiful-Beach_House3.jpg'],
     'Rouna': ['images/Rouna.jpg', 'images/Rouna2.jpg', 'images/Rouna3.jpg'],
@@ -39,6 +90,13 @@ const placeImages = {
     'Corsica': ['images/Corsica.jpg', 'images/Corsica2.jpg', 'images/Corsica3.jpg']
 };
 
+/* ============================================================
+   USER LOGIN
+   - Sends a POST request to the API with email and password.
+   - On success: stores the JWT token in a cookie and redirects
+     the user to index.html.
+   - On failure: displays an alert with the error message.
+   ============================================================ */
 async function loginUser(email, password) {
   try {
     const response = await fetch('http://127.0.0.1:5000/api/v1/auth/login', {
@@ -62,6 +120,16 @@ async function loginUser(email, password) {
   }
 }
 
+/* ============================================================
+   AUTHENTICATION CHECK
+   - Reads the "token" cookie to determine if the user is logged in.
+   - Shows/hides the login link, logout button, and "add-review"
+     section based on the authentication state.
+   - If authenticated: triggers place list loading (index) or
+     place details loading (place.html).
+   - If not authenticated on add_review.html: redirects to index.html.
+   - Returns the token for later use.
+   ============================================================ */
 function checkAuthentication() {
     const token = getCookie('token');
     const loginLink = document.getElementById('login-link');
@@ -90,17 +158,33 @@ function checkAuthentication() {
       return token;
 }
 
+/* ============================================================
+   LOGOUT
+   - Deletes the token cookie by setting a past expiration date.
+   - Redirects the user to the login page.
+   ============================================================ */
 function logout() {
     document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     window.location.href = 'login.html';
 }
 
+/* ============================================================
+   UTILITY: READ A COOKIE BY NAME
+   - Iterates over all browser cookies to find the one matching
+     the given name.
+   - Returns its value, or null if not found.
+   ============================================================ */
 function getCookie(name) {
     const cookies = document.cookie.split('; ');
     const cookie = cookies.find(cookie => cookie.startsWith(name + '='));
     return cookie ? cookie.split('=')[1] : null;
 }
 
+/* ============================================================
+   FETCH PLACES LIST (API)
+   - Sends an authenticated GET request to retrieve all places.
+   - Passes the response data to displayPlaces() for rendering.
+   ============================================================ */
 async function fetchPlaces(token) {
     // Make a GET request to fetch places data
     try {
@@ -124,6 +208,13 @@ async function fetchPlaces(token) {
   }
 }
 
+/* ============================================================
+   DISPLAY PLACES LIST (DOM)
+   - Clears the #places-list container.
+   - For each place, creates a card with an image, title, price,
+     and a "View Details" button linking to place.html?id=...
+   - Stores the price in a data-price attribute for client-side filtering.
+   ============================================================ */
 function displayPlaces(places) {
     // Clear the current content of the places list
     const placesList = document.getElementById('places-list');
@@ -145,6 +236,14 @@ function displayPlaces(places) {
       console.log(place.title);
     });
 }
+
+/* ============================================================
+   CLIENT-SIDE PRICE FILTER
+   - Listens for changes on the #price-filter dropdown.
+   - Shows or hides place cards based on whether their price
+     is within the selected range.
+   - Selecting "All" removes the filter and shows every card.
+   ============================================================ */
 const priceFilter = document.getElementById('price-filter');
 if (priceFilter) {
   priceFilter.addEventListener('change', (event) => {
@@ -165,11 +264,21 @@ if (priceFilter) {
   });
 }
 
+/* ============================================================
+   UTILITY: GET PLACE ID FROM URL
+   - Reads the "id" query parameter from the current page URL.
+   - Returns its value, or null if absent.
+   ============================================================ */
 function getPlaceIdFromURL() {
     const params = new URLSearchParams(window.location.search);
     return params.get('id');
 }
 
+/* ============================================================
+   FETCH PLACE DETAILS (API)
+   - Sends an authenticated GET request for a specific place.
+   - Passes the response data to displayPlaceDetails() for rendering.
+   ============================================================ */
 async function fetchPlaceDetails(token, placeId) {
     try {
       const request = await fetch(`http://127.0.0.1:5000/api/v1/places/${placeId}`, {
@@ -192,15 +301,24 @@ async function fetchPlaceDetails(token, placeId) {
   }
 }
 
+/* ============================================================
+   DISPLAY PLACE DETAILS (DOM)
+   - Clears the #place-details container.
+   - Builds an image slider with previous/next navigation buttons.
+   - Displays host name, price, description, and amenities with icons.
+   - Generates review cards with star ratings inside #reviews.
+   ============================================================ */
 function displayPlaceDetails(place) {
     // Clear the current content of the place details section
     const placeDetails = document.getElementById('place-details');
     placeDetails.innerHTML = '';
     // Create elements to display the place details (name, description, price, amenities and reviews)
+    // Place title
     const title = document.createElement('h2');
     title.textContent = place.title;
     placeDetails.appendChild(title);
 
+    // --- Image slider ---
     const images = placeImages[place.title] || [];
     let currentIndex = 0;
 
@@ -218,6 +336,7 @@ function displayPlaceDetails(place) {
     img.style.maxHeight = '900px';
     img.style.objectFit = 'cover';
 
+    // Previous image button
     const prevBtn = document.createElement('button');
     prevBtn.textContent = '◀';
     prevBtn.style.position = 'absolute';
@@ -235,6 +354,7 @@ function displayPlaceDetails(place) {
         img.src = images[currentIndex];
     };
 
+    // Next image button
     const nextBtn = document.createElement('button');
     nextBtn.textContent = '▶';
     nextBtn.style.position = 'absolute';
@@ -257,6 +377,7 @@ function displayPlaceDetails(place) {
     sliderDiv.appendChild(nextBtn);
     placeDetails.appendChild(sliderDiv);
     
+    // --- Amenity icon mapping ---
     const amenityIcons = {
     'WiFi': 'images/icon_wifi.png',
     'Pool': 'images/icon_pool.png',
@@ -264,6 +385,8 @@ function displayPlaceDetails(place) {
     'Bathtub': 'images/icon_bath.png',
     'King Size Bed': 'images/icon_bed.png'
   };
+
+    // Main place information block
     const div = document.createElement('div');
     div.classList.add('place-details');
     div.innerHTML = `
@@ -274,6 +397,7 @@ function displayPlaceDetails(place) {
     `;
     placeDetails.appendChild(div);
     
+    // --- Reviews section ---
     const reviewsSection = document.getElementById('reviews');
     reviewsSection.innerHTML = '<h2>Reviews</h2>';
     place.reviews.forEach(review => {
@@ -289,6 +413,12 @@ function displayPlaceDetails(place) {
 });
 }
 
+/* ============================================================
+   SUBMIT A REVIEW (API)
+   - Sends an authenticated POST request with the review text,
+     rating, and place ID.
+   - Delegates response handling to handleResponse().
+   ============================================================ */
 async function submitReview(token, placeId, reviewText, rating) {
     try {
         // Make a POST request to submit review data
@@ -307,14 +437,21 @@ async function submitReview(token, placeId, reviewText, rating) {
             })
         });
         // Handle the response
-        handleResponse(response, placeId);
+        const data = await response.json();
+        handleResponse(response, data,placeId);
     } catch (error) {
         console.error('Error submitting review:', error);
         alert('Network error. Please try again.');
     }
 }
 
-function handleResponse(response, placeId) {
+/* ============================================================
+   HANDLE REVIEW SUBMISSION RESPONSE
+   - On success: shows a confirmation alert, resets the form,
+     and redirects to the place details page.
+   - On failure: displays an error alert.
+   ============================================================ */
+function handleResponse(response, data, placeId) {
     if (response.ok) {
         alert('Review submitted successfully!');
         // Clear the form
@@ -322,20 +459,6 @@ function handleResponse(response, placeId) {
         // Redirect back to the place page
         window.location.href = `place.html?id=${placeId}`;
     } else {
-        alert('Failed to submit review');
+        alert(data.message || 'Failed to submit review');
     }
-}
-
-const stars = document.querySelectorAll('.star');
-if (stars.length > 0) {
-    stars.forEach(star => {
-        star.addEventListener('click', () => {
-            const value = star.dataset.value;
-            document.getElementById('rating').value = value;
-            stars.forEach(s => {
-                s.textContent = s.dataset.value <= value ? '★' : '☆';
-                s.classList.toggle('selected', s.dataset.value <= value);
-            });
-        });
-    });
 }
