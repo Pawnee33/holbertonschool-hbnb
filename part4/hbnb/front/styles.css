@@ -234,6 +234,10 @@ header nav {
     color: #feffff;
 }
 
+#add-review h3 {
+    text-align: center;
+}
+
 #reviews h2 {
 margin-top: 20px;
 }

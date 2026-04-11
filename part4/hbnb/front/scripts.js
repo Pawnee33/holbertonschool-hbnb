@@ -25,6 +25,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const reviewForm = document.getElementById('review-form');
     const token = checkAuthentication();
     const placeId = getPlaceIdFromURL();
+    const placeTitle = document.getElementById('place-title');
+
+    if (placeTitle) {
+        const placeId = getPlaceIdFromURL();
+        if (placeId) {
+            fetch(`http://127.0.0.1:5000/api/v1/places/${placeId}`)
+                .then(r => r.json())
+                .then(data => {
+                    placeTitle.innerHTML = `<strong>Reviewing:</strong> ${data.title}`;
+                });
+        }
+    }
  
     if (reviewForm) { 
         reviewForm.addEventListener('submit', async (event) => {
@@ -148,13 +160,13 @@ function checkAuthentication() {
         if (logoutButton) logoutButton.style.display = 'block';
         if (addReviewSection) addReviewSection.style.display = 'block';
         // Fetch places data if the user is authenticated
-        const placesList = document.getElementById('places-list');
-        if (placesList) fetchPlaces(token);
-
-        const placeId = getPlaceIdFromURL();
-        if (placeId) fetchPlaceDetails(token, placeId);
-
+        
+        
       }
+      const placesList = document.getElementById('places-list');
+      if (placesList) fetchPlaces(token);
+      const placeId = getPlaceIdFromURL();
+      if (placeId) fetchPlaceDetails(token, placeId);
       return token;
 }
 
@@ -396,6 +408,29 @@ function displayPlaceDetails(place) {
         <p class="place-info"><strong>Amenities:</strong> ${place.amenities.map(a => `<img src="${amenityIcons[a.name] || ''}" width="20"> ${a.name}`).join(', ')}</p>
     `;
     placeDetails.appendChild(div);
+
+    // Bouton Add a Review
+    const token = getCookie('token');
+    const addReviewBtn = document.createElement('a');
+
+    if (token) {
+        addReviewBtn.href = `add_review.html?id=${place.id}`;
+        addReviewBtn.textContent = 'Add a Review';
+    } else {
+        addReviewBtn.href = '#';
+        addReviewBtn.textContent = 'Add a Review';
+        addReviewBtn.onclick = (e) => {
+            e.preventDefault();
+            alert('You must be logged in to add a review!');
+        };
+    }
+
+    addReviewBtn.classList.add('details-button');
+    addReviewBtn.style.display = 'block';
+    addReviewBtn.style.textAlign = 'center';
+    addReviewBtn.style.margin = '20px auto';
+    addReviewBtn.style.maxWidth = '200px';
+    placeDetails.appendChild(addReviewBtn);
     
     // --- Reviews section ---
     const reviewsSection = document.getElementById('reviews');
