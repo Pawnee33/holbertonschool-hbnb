@@ -43,6 +43,10 @@ place_model = api.model('Place', {
     'amenities': fields.List(
         fields.String, required=True,
         description="List of amenities ID's"
+    ),
+    'images': fields.List(
+        fields.String,
+        description="List of image URLs"
     )
 })
 
@@ -69,6 +73,10 @@ class PlaceList(Resource):
 
         try:
             new_place = facade.create_place(place_data)
+            if 'images' in place_data:
+                new_place.set_images(place_data['images'])
+                from app import db
+                db.session.commit()
         except ValueError as error:
             return {'error': str(error)}, 400
         return {
@@ -120,6 +128,7 @@ class PlaceResource(Resource):
                 'last_name': place.user.last_name,
                 'email': place.user.email
             },
+            'images': place.get_images(),
             'amenities': [
                 {
                     'id': amenity.id,

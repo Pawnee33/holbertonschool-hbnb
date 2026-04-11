@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const token = checkAuthentication();
     const placeId = getPlaceIdFromURL();
     const placeTitle = document.getElementById('place-title');
+    const placeForm = document.getElementById('place-form');
 
     if (placeTitle) {
         const placeId = getPlaceIdFromURL();
@@ -36,6 +37,22 @@ document.addEventListener('DOMContentLoaded', () => {
                     placeTitle.innerHTML = `<strong>Reviewing:</strong> ${data.title}`;
                 });
         }
+    }
+    // Fetch amenities dynamiquement
+    const amenitiesList = document.getElementById('amenities-list');
+    if (amenitiesList) {
+        fetch('http://127.0.0.1:5000/api/v1/amenities/')
+            .then(r => r.json())
+            .then(amenities => {
+                amenitiesList.innerHTML = '';
+                amenities.forEach(amenity => {
+                    amenitiesList.innerHTML += `
+                        <label>
+                            <input type="checkbox" value="${amenity.id}" name="amenity"> ${amenity.name}
+                        </label>
+                    `;
+                });
+            });
     }
  
     if (reviewForm) { 
@@ -68,6 +85,58 @@ document.addEventListener('DOMContentLoaded', () => {
 
             await submitReview(token, placeId, reviewText, rating);
         });
+    }
+    
+    if (placeForm) {
+      placeForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const title = document.getElementById('title').value;
+        const description = document.getElementById('description').value;
+        const price = document.getElementById('price').value;
+        const latitude = document.getElementById('latitude').value;
+        const longitude = document.getElementById('longitude').value;
+        const amenities = [...document.querySelectorAll('#amenities-list input:checked')]
+            .map(cb => cb.value);
+        const imageFiles = [...document.querySelectorAll('.image-file')]
+            .filter(input => input.files.length > 0);
+
+        const images = [];
+        for (const input of imageFiles) {
+            const formData = new FormData();
+            formData.append('file', input.files[0]);
+            const res = await fetch('http://127.0.0.1:5000/api/v1/upload/', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` },
+                body: formData
+            });
+            const data = await res.json();
+            if (res.ok) images.push(data.url);
+        }
+
+        if (!token) {
+            alert('You must be logged in to add a place');
+            return;
+        }
+        if (!title) {
+            alert('Title is required');
+            return;
+        }
+        if (!description) {
+            alert('Description is required');
+            return;
+        }
+        if (!price) {
+            alert('Price is required');
+            return;
+        }
+        if (!latitude || !longitude) {
+            alert('Latitude and longitude are required');
+            return;
+        }
+        console.log('Data:', { title, description, price, latitude, longitude, amenities, images });
+        await createPlace(token, { title, description, price, latitude, longitude, amenities, images});
+        await createPlace(token, { title, description, price, latitude, longitude, amenities, images})
+      });
     }
     /* ============================================================
     INTERACTIVE STAR RATING
@@ -247,6 +316,21 @@ function displayPlaces(places) {
       placesList.appendChild(card);
       console.log(place.title);
     });
+    
+    if (isAdmin()) {
+      const addBtn = document.createElement('a');
+      addBtn.href = 'add_place.html';
+      addBtn.id = 'add-place-btn';
+      addBtn.textContent = '+';
+      placesList.appendChild(addBtn);
+}
+}
+
+function isAdmin() {
+    const token = getCookie('token');
+    if (!token) return false;
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.is_admin === true;
 }
 
 /* ============================================================
@@ -331,7 +415,7 @@ function displayPlaceDetails(place) {
     placeDetails.appendChild(title);
 
     // --- Image slider ---
-    const images = placeImages[place.title] || [];
+    const images = place.images && place.images.length > 0 ? place.images : (placeImages[place.title] || []);
     let currentIndex = 0;
 
     const sliderDiv = document.createElement('div');
@@ -446,6 +530,37 @@ function displayPlaceDetails(place) {
         // Append the created elements to the place details section
         reviewsSection.appendChild(card);
 });
+}
+async function createPlace(token, placeData) {
+    try {
+        const response = await fetch('http://127.0.0.1:5000/api/v1/places/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                title: placeData.title,
+                description: placeData.description,
+                price: parseFloat(placeData.price),
+                latitude: parseFloat(placeData.latitude),
+                longitude: parseFloat(placeData.longitude),
+                amenities: placeData.amenities,
+                images: placeData.images
+            })
+        });
+        const data = await response.json();
+        if (response.ok) {
+            alert('Place created successfully!');
+            document.getElementById('place-form').reset();
+            window.location.href = 'index.html';
+        } else {
+            alert(data.message || 'Failed to create place');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Network error. Please try again.');
+    }
 }
 
 /* ============================================================

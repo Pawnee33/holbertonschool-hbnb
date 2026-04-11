@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Place</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" href="images/icon.png">
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div>
+            <nav>
+                <a href="index.html">
+                <img src="images/logo.png" alt="Hbnb logo" class="logo">
+            </a>
+            </nav>
+        </div>
+        <nav>
+            <a href="index.html" id="login-link" class="login-button">Home</a>
+            <button id="logout-button" onclick="logout()">Logout</button>
+        </nav>
+    </header>
+    <main>
+        <h2  id="addPlace-title"><strong>Add Place</strong></h2>
+        <form id="place-form" class="form">
+            <label for="title"><strong>Title:</strong></label>
+            <input type="text" id="title" name="title" required>
+            <label for="description"><strong>Description:</strong></label>
+            <textarea id="description" name="description" required></textarea>
+            <label for="price"><strong>Price:</strong></label>
+            <input type="number" id="price" name="price" required>
+            <label for="latitude"><strong>Latitude:</strong></label>
+            <input type="number" id="latitude" name="latitude" step="any" required>
+            <label for="longitude"><strong>Longitude:</strong></label>
+            <input type="number" id="longitude" name="longitude" step="any" required>
+            <label><strong>Amenities:</strong></label>
+            <div id="amenities-list">
+                <!-- Amenities will be populated dynamically -->
+            </div>
+            <label><strong>Images (URLs):</strong></label>
+            <label><strong>Images:</strong></label>
+            <div id="images-inputs">
+                <input type="file" class="image-file" accept="image/*">
+                <input type="file" class="image-file" accept="image/*">
+                <input type="file" class="image-file" accept="image/*">
+            </div>
+            <button type="submit">Add Place</button>
+        </form>
+
+    </main>
+
+    <!-- footer -->
+    <footer>
+        <p>&copy; 2026 HBNB. All rights reserved</p>
+    </footer>
+    <script src="scripts.js"></script>
+</body>
+</html>

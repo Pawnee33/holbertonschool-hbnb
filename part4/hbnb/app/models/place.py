@@ -12,6 +12,7 @@ from app.models.basemodel import BaseModel
 from app import db
 from sqlalchemy.orm import validates
 from app.models.amenity import Amenity
+import json
 
 place_amenity = db.Table(
     'place_amenity',
@@ -60,6 +61,10 @@ class Place(BaseModel):
         db.String(36),
         db.ForeignKey('users.id'),
         nullable=False
+        )
+    images = db.Column(
+        db.Text, nullable=True,
+        default='[]'
         )
     reviews = db.relationship(
         'Review',
@@ -143,3 +148,53 @@ class Place(BaseModel):
             raise ValueError("amenity must be an Amenity instance")
         if amenity not in self.amenities:
             self.amenities.append(amenity)
+
+    @validates('images')
+    def validate_images(self, key, value):
+        """
+        Validate and normalize the images field.
+
+        Accepts a list of URLs or a JSON string representing a list.
+        Returns a JSON-encoded string for storage.
+
+        Args:
+            key (str): Field name being validated.
+            value (list or str): Image URLs as a list or JSON string.
+
+        Raises:
+            ValueError: If value is not a valid list or JSON string.
+
+        Returns:
+            str: JSON-encoded list of image URLs.
+        """
+        if value is None:
+            return '[]'
+        if isinstance(value, list):
+            return json.dumps(value)
+        if isinstance(value, str):
+            try:
+                json.loads(value)
+                return value
+            except json.JSONDecodeError:
+                raise ValueError("Images must be a valid JSON list")
+        raise ValueError("Images must be a list or JSON string")
+
+    def get_images(self):
+        """
+        Return the list of image URLs for this place.
+
+        Returns:
+            list: List of image URL strings.
+        """
+        if self.images:
+            return json.loads(self.images)
+        return []
+
+    def set_images(self, image_list):
+        """
+        Store a list of image URLs as a JSON string.
+
+        Args:
+            image_list (list): List of image URL strings to store.
+        """
+        self.images = json.dumps(image_list)
