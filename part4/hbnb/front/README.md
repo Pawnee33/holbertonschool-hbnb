@@ -6,6 +6,27 @@ This part focuses on the **front-end development** of the HBnB application using
 The goal is to build an interactive user interface that connects to the back-end API developed in the previous parts of the project.
 
 ---
+## Screenshots
+
+### Login Page
+![Login page](screenshots/login.PNG)
+
+### Add Places
+![Add place](screenshots/add_place.PNG)
+
+### List of Places Admin
+![List of places Admin](screenshots/index_admin.PNG)
+
+### List of Places
+![List of places](screenshots/index.PNG)
+
+### Place Details
+![Place details](screenshots/place_detail.PNG)
+
+### Add Review
+![Add review](screenshots/review.PNG)
+
+---
 
 ## Project Structure
 
