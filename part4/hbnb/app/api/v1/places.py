@@ -66,6 +66,7 @@ class PlaceList(Resource):
     def post(self):
         """Register a new place"""
         place_data = api.payload
+        print(f"Received data: {place_data}")
 
         current_user = get_jwt_identity()
 
@@ -78,6 +79,7 @@ class PlaceList(Resource):
                 from app import db
                 db.session.commit()
         except ValueError as error:
+            print(f"ValueError: {error}")
             return {'error': str(error)}, 400
         return {
             'id': new_place.id,
@@ -100,7 +102,8 @@ class PlaceList(Resource):
                 'title': place.title,
                 'latitude': place.latitude,
                 'longitude': place.longitude,
-                'price':place.price
+                'price':place.price,
+                'images': place.get_images()
             })
         return list_places, 200
 

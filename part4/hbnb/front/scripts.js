@@ -134,7 +134,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         console.log('Data:', { title, description, price, latitude, longitude, amenities, images });
-        await createPlace(token, { title, description, price, latitude, longitude, amenities, images});
         await createPlace(token, { title, description, price, latitude, longitude, amenities, images})
       });
     }
@@ -306,8 +305,11 @@ function displayPlaces(places) {
       const card = document.createElement('div');
       card.classList.add('place-card');
       card.dataset.price = place.price;
+      const imgSrc = place.images && place.images.length > 0
+          ? place.images[0]
+          : (placeImages[place.title] ? placeImages[place.title][0] : '');
       card.innerHTML = `
-      <img src="${placeImages[place.title] ? placeImages[place.title][0] : ''}" alt="${place.title}" style="width:100%; border-radius:10px;">
+      <img src="${imgSrc}" alt="${place.title}" style="width:100%; border-radius:10px;">
       <h2>${place.title}</h2>
       <p>Price per night: $${place.price}</p>
       <button class="details-button" onclick="window.location.href='place.html?id=${place.id}'">View Details</button>

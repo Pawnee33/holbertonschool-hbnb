@@ -33,19 +33,20 @@
             <label for="price"><strong>Price:</strong></label>
             <input type="number" id="price" name="price" required>
             <label for="latitude"><strong>Latitude:</strong></label>
-            <input type="number" id="latitude" name="latitude" step="any" required>
+            <input type="number" id="latitude" name="latitude" step="any" min="-90" max="90" required>
+            <small>Latitude must be between -90 and 90</small>
             <label for="longitude"><strong>Longitude:</strong></label>
-            <input type="number" id="longitude" name="longitude" step="any" required>
+            <input type="number" id="longitude" name="longitude" step="any" min="-180" max="180" required>
+            <small>Longitude must be between -180 and 180</small>
             <label><strong>Amenities:</strong></label>
             <div id="amenities-list">
                 <!-- Amenities will be populated dynamically -->
             </div>
-            <label><strong>Images (URLs):</strong></label>
             <label><strong>Images:</strong></label>
             <div id="images-inputs">
-                <input type="file" class="image-file" accept="image/*">
-                <input type="file" class="image-file" accept="image/*">
-                <input type="file" class="image-file" accept="image/*">
+                <input type="file" class="image-file" accept=".jpg,.jpeg,.png,.gif,.webp">
+                <input type="file" class="image-file" accept=".jpg,.jpeg,.png,.gif,.webp">
+                <input type="file" class="image-file" accept=".jpg,.jpeg,.png,.gif,.webp">
             </div>
             <button type="submit">Add Place</button>
         </form>
