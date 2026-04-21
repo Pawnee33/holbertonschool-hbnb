@@ -317,6 +317,66 @@ margin-top: 20px;
     cursor: pointer;
 }
 
+#place-form input[type="text"],
+#place-form input[type="number"],
+#place-form textarea {
+    width: 100%;
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    margin-bottom: 15px;
+    font-size: 1rem;
+}
+
+#place-form input[type="text"]::placeholder,
+#place-form input[type="number"]::placeholder,
+#place-form textarea::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+#place-form button[type="submit"] {
+    border-radius: 25px;
+}
+
+#review-form button[type="submit"] {
+    border-radius: 25px;
+}
+
+#place-form small {
+    display: block;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.8rem;
+    margin-top: -10px;
+    margin-bottom: 10px;
+}
+
+#amenities-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+#amenities-list label {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 5px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+#images-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.image-file {
+    color: #fff;
+}
+
 nav a {
     text-align: right;
     color: #fff;
