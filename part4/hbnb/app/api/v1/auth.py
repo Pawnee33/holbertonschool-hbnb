@@ -11,6 +11,36 @@ login_model = api.model('Login', {
     'password': fields.String(required=True, description='User password')
 })
 
+register_model = api.model('Register', {
+    'first_name': fields.String(required=True),
+    'last_name': fields.String(required=True),
+    'email': fields.String(required=True),
+    'password': fields.String(required=True),
+})
+
+@api.route('/register')
+class Register(Resource):
+    @api.expect(register_model, validate=True)
+    @api.response(201, 'User created successfully')
+    @api.response(400, 'Email already registered')
+    def post(self):
+        """Register a new user (public endpoint)"""
+        data = api.payload
+
+        existing = facade.get_user_by_email(data['email'])
+        if existing:
+            return {'error': 'Email already registered'}, 400
+
+        try:
+            new_user = facade.create_user(data)
+        except ValueError as e:
+            return {'error': str(e)}, 400
+
+        return {
+            'id': new_user.id,
+            'message': 'User created successfully'
+        }, 201
+
 
 @api.route('/login')
 class Login(Resource):

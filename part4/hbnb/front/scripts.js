@@ -22,6 +22,48 @@ document.addEventListener('DOMContentLoaded', () => {
             loginUser(email, password);
         });
     }
+
+    // --- Register ---
+    const registerForm = document.getElementById('register-form');
+    if (registerForm) {
+        registerForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const first_name = document.getElementById('first_name').value;
+            const last_name  = document.getElementById('last_name').value;
+            const email      = document.getElementById('email').value;
+            const password   = document.getElementById('password').value;
+            const confirm    = document.getElementById('confirm_password').value;
+
+            const errorEl = document.getElementById('register-error');
+
+            if (password !== confirm) {
+                errorEl.textContent = 'Passwords do not match.';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            try {
+                const response = await fetch('http://127.0.0.1:5000/api/v1/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ first_name, last_name, email, password })
+                });
+
+                if (response.ok) {
+                    // Auto-login après inscription
+                    await loginUser(email, password);
+                } else {
+                    const data = await response.json();
+                    errorEl.textContent = data.error || 'Registration failed.';
+                    errorEl.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Register error:', error);
+            }
+        });
+    }
+
+
     const reviewForm = document.getElementById('review-form');
     const token = checkAuthentication();
     const placeId = getPlaceIdFromURL();
