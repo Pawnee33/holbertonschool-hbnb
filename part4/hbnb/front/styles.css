@@ -72,6 +72,12 @@ header nav {
     background-color: #790e0b;
 }
 
+#register-error {
+    color: red;
+    display: none;
+    text-align: center;
+}
+
 #logout-button {
     background-color: transparent;
     border: none;
@@ -160,11 +166,25 @@ header nav {
     cursor: pointer;
     margin-top: 10px;
     transition: 0.3s;
+    text-decoration: none;
+    display: inline-block;
 }
 
 .login-btn:hover {
     background: #fff;
     color: #05284c;
+}
+
+.login-buttons-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.login-buttons-row .login-btn {
+    flex: 1;
+    text-align: center;
+    padding: 10px 0;
 }
 
 #places-list {

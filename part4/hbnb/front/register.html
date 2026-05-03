@@ -1,50 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>HBnB - Register</title>
-  <link rel="stylesheet" href="styles.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" href="images/icon.png">
 </head>
 <body>
-  <header>
-    <div class="logo">HBnB</div>
-    <nav>
-      <a href="login.html" id="login-link">Login</a>
-    </nav>
-  </header>
 
-  <main>
-    <section class="login-form">
-      <h2>Create an account</h2>
-      <form id="register-form">
-        <div class="form-group">
-          <label for="first_name">First name</label>
-          <input type="text" id="first_name" name="first_name" required />
+    <!-- Header -->
+    <header>
+        <div>
+            <nav>
+                <a href="index.html">
+                    <img src="images/logo.png" alt="Hbnb logo" class="logo">
+                </a>
+            </nav>
         </div>
-        <div class="form-group">
-          <label for="last_name">Last name</label>
-          <input type="text" id="last_name" name="last_name" required />
-        </div>
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input type="email" id="email" name="email" required />
-        </div>
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input type="password" id="password" name="password" required />
-        </div>
-        <div class="form-group">
-          <label for="confirm_password">Confirm password</label>
-          <input type="password" id="confirm_password" name="confirm_password" required />
-        </div>
-        <button type="submit">Register</button>
-        <p id="register-error" style="color:red; display:none;"></p>
-      </form>
-      <p>Already have an account? <a href="login.html">Login</a></p>
-    </section>
-  </main>
+        <nav>
+            <a href="index.html" id="login-link" class="login-button">Home</a>
+            <button id="logout-button" onclick="logout()">Logout</button>
+        </nav>
+    </header>
 
-  <script src="scripts.js"></script>
+    <main class="login-main">
+        <form id="register-form" class="login-card">
+            <h2>Register</h2>
+            <div class="input-group">
+                <span>👤</span>
+                <input type="text" id="first_name" name="first_name" placeholder="First name" required>
+            </div>
+            <div class="input-group">
+                <span>👤</span>
+                <input type="text" id="last_name" name="last_name" placeholder="Last name" required>
+            </div>
+            <div class="input-group">
+                <span>✉</span>
+                <input type="email" id="email" name="email" placeholder="Email" required>
+            </div>
+            <div class="input-group">
+                <span>🔒</span>
+                <input type="password" id="password" name="password" placeholder="Password" required>
+            </div>
+            <div class="input-group">
+                <span>🔒</span>
+                <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm password" required>
+            </div>
+            <p id="register-error"></p>
+            <div class="login-buttons-row">
+                <a href="login.html" class="login-btn">LOGIN</a>
+                <button type="submit" class="login-btn">REGISTER</button>
+            </div>
+        </form>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 HBNB. All rights reserved</p>
+    </footer>
+
+    <script src="scripts.js"></script>
 </body>
 </html>
