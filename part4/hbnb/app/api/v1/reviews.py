@@ -121,11 +121,11 @@ class ReviewResource(Resource):
 
         review = facade.get_review(review_id)
 
+        if not review:
+            return {'error': 'Review not found'}, 404
+
         if review.user.id != current_user:
             return {"error": "Unauthorized action"}, 403
-        delete_review = facade.get_review(review_id)
-        if not delete_review:
-            return {'error': 'Review not found'}, 404
 
         facade.delete_review(review_id)
         return {'message': 'Review deleted successfully'}, 200
