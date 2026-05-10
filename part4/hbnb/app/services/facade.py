@@ -55,6 +55,10 @@ class HBnBFacade:
         """get_user_by_email that retrieved an user via an email"""
         return self.user_repo.get_by_attribute('email', email)
 
+    def delete_user(self, user_id):
+        """Delete an existing user and all related data (cascade)."""
+        self.user_repo.delete(user_id)
+
     # PLACE
     def create_place(self, place_data):
         """Create a new place with validation"""

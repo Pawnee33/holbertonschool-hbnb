@@ -184,3 +184,26 @@ class UserResource(Resource):
             'last_name': update_user.last_name,
             'email': update_user.email
         }, 200
+
+    @api.response(200, 'User deleted successfully')
+    @api.response(404, 'User not found')
+    @api.response(403, 'Unauthorized action')
+    @jwt_required()
+    def delete(self, user_id):
+        """Delete a user"""
+        claims = get_jwt()
+        current_user = get_jwt_identity()
+
+        # ① D'abord vérifier que le user existe
+        user = facade.get_user(user_id)
+        if not user:
+            return {'error': 'User not found'}, 404
+
+        # ② Vérifier les droits : admin OU soi-même
+        is_admin = claims.get("is_admin", False)
+        if not is_admin and user_id != current_user:
+            return {"error": "Unauthorized action"}, 403
+
+        # ③ Supprimer (la cascade supprime places + reviews automatiquement)
+        facade.delete_user(user_id)
+        return {'message': 'User deleted successfully'}, 200
